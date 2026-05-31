@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Dinamikus minőségügyi ellenőrző rendszer vasúti alkatrészgyártáshoz – QR-alapú csekklista, PDF tanúsítvány, menedzser dashboard.">
+  <title>MEOSEGÉD – Minőségügyi Segéd</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Külső könyvtárak -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ════════════════════════════════════════════════════════
+       BEJELENTKEZÉS
+  ════════════════════════════════════════════════════════ -->
+  <div class="screen active" id="screen-login">
+    <div class="login-hero">
+      <div class="login-logo">🔍</div>
+      <h1 class="login-title">MEO<span>SEGÉD</span></h1>
+      <p class="login-subtitle">Vasúti alkatrész minőségügyi rendszer</p>
+    </div>
+
+    <p class="login-section-title">Válaszd ki a profilodat</p>
+
+    <div class="user-grid">
+      <div class="user-card" data-user-id="u1">
+        <div class="user-card-avatar" style="background: linear-gradient(135deg, #6366f1, #a78bfa)">KJ</div>
+        <div class="user-card-name">Kovács János</div>
+        <div class="user-card-role role-inspector">Ellenőr</div>
+        <div class="user-card-pin">🔑 1234</div>
+      </div>
+      <div class="user-card" data-user-id="u2">
+        <div class="user-card-avatar" style="background: linear-gradient(135deg, #ec4899, #f43f5e)">NÉ</div>
+        <div class="user-card-name">Nagy Éva</div>
+        <div class="user-card-role role-inspector">Ellenőr</div>
+        <div class="user-card-pin">🔑 2345</div>
+      </div>
+      <div class="user-card" data-user-id="u3">
+        <div class="user-card-avatar" style="background: linear-gradient(135deg, #06b6d4, #3b82f6)">SP</div>
+        <div class="user-card-name">Szabó Péter</div>
+        <div class="user-card-role role-inspector">Ellenőr</div>
+        <div class="user-card-pin">🔑 3456</div>
+      </div>
+      <div class="user-card" data-user-id="u4">
+        <div class="user-card-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444)">HG</div>
+        <div class="user-card-name">Horváth Gábor</div>
+        <div class="user-card-role role-manager">Menedzser</div>
+        <div class="user-card-pin">🔑 9999</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       TOP BAR (minden más képernyőn látható)
+  ════════════════════════════════════════════════════════ -->
+  <div class="topbar" id="main-topbar" style="display:none">
+    <div class="topbar-logo">
+      <div class="topbar-logo-icon">🔍</div>
+      <div class="topbar-brand">MEO<span>SEGÉD</span></div>
+    </div>
+    <div class="topbar-user">
+      <div class="user-avatar-small" id="current-user-avatar">?</div>
+      <span class="user-name-small" id="current-user-name"></span>
+      <button class="logout-btn" id="logout-btn">Kilépés</button>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       FŐMENÜ (Ellenőr)
+  ════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-home">
+    <div class="content-wrap">
+      <div class="home-welcome">
+        <h2>Szia, <span id="home-user-name">Ellenőr</span>! 👋</h2>
+        <p>Mit szeretnél ellenőrizni ma?</p>
+      </div>
+
+      <button class="start-inspection-btn" data-nav="scanner">
+        <span class="btn-icon">📷</span>
+        <span>Új ellenőrzés indítása</span>
+      </button>
+
+      <p class="section-label">Legutóbbi ellenőrzések</p>
+      <div id="recent-inspections">
+        <p class="empty-state">Betöltés...</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       SZKENNER
+  ════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-scanner">
+    <div class="content-wrap">
+      <h2 class="scanner-title">Termékazonosítás</h2>
+      <p class="scanner-subtitle">Olvasd be a QR-kódot, vagy add meg manuálisan a termékkódot.</p>
+
+      <div id="scan-area">
+        <!-- Kamera nézet -->
+        <div class="camera-wrap">
+          <video id="scanner-video" playsinline muted></video>
+          <canvas id="scanner-canvas"></canvas>
+          <div id="camera-overlay">
+            <div class="scan-frame">
+              <div class="scan-line"></div>
+            </div>
+          </div>
+          <div class="camera-placeholder" id="camera-placeholder">
+            <div class="ph-icon">📷</div>
+            <span>Kamera indításához nyomd meg a gombot</span>
+          </div>
+        </div>
+
+        <button class="camera-btn" id="start-camera-btn">📷 Kamera bekapcsolása</button>
+
+        <div class="divider">vagy</div>
+
+        <div class="manual-input-wrap">
+          <input
+            type="text"
+            class="manual-input"
+            id="manual-code-input"
+            placeholder="Pl: V04X vagy VALTO-04X"
+            autocomplete="off"
+            autocapitalize="characters"
+          >
+          <button class="manual-submit" id="manual-submit-btn">→</button>
+        </div>
+      </div>
+
+      <!-- Demo gyors beolvasás -->
+      <div class="demo-section">
+        <div class="demo-title">🎯 Demo – Gyors termékválasztás</div>
+        <div class="demo-scan-grid">
+          <button class="demo-scan-btn" data-code="V04X">
+            <span class="demo-btn-badge" style="background:#e63946">VALTO-04X</span>
+            <div class="demo-btn-info">
+              <span class="demo-btn-name">Váltóhajtómű 4X</span>
+              <span class="demo-btn-client">🚂 MÁV · 8 ellenőrzési pont</span>
+            </div>
+            <span class="demo-btn-arrow">›</span>
+          </button>
+          <button class="demo-scan-btn" data-code="RBB2">
+            <span class="demo-btn-badge" style="background:#2a9d8f">RELAY-BB2</span>
+            <div class="demo-btn-info">
+              <span class="demo-btn-name">Jelfogó egység BB2</span>
+              <span class="demo-btn-client">🇦🇹 ÖBB · 6 ellenőrzési pont</span>
+            </div>
+            <span class="demo-btn-arrow">›</span>
+          </button>
+          <button class="demo-scan-btn" data-code="V07D">
+            <span class="demo-btn-badge" style="background:#e76f51">VALTO-07D</span>
+            <div class="demo-btn-info">
+              <span class="demo-btn-name">Váltóhajtómű 7D</span>
+              <span class="demo-btn-client">🇩🇪 Deutsche Bahn · 10 ellenőrzési pont</span>
+            </div>
+            <span class="demo-btn-arrow">›</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       CSEKKLISTA
+  ════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-checklist">
+    <div id="checklist-header"></div>
+    <div id="checklist-container"></div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       ÖSSZEGZÉS + PDF
+  ════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-summary">
+    <div class="content-wrap">
+      <div id="summary-container"></div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       MENEDZSER DASHBOARD
+  ════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-dashboard">
+    <div class="content-wrap">
+      <div class="dashboard-title">📊 Vezérlőpult</div>
+      <div class="dashboard-subtitle" id="dashboard-date"></div>
+
+      <!-- KPI kártyák -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon">📋</div>
+          <div class="kpi-label">Összes ellenőrzés</div>
+          <div class="kpi-value" id="kpi-total">–</div>
+          <div class="kpi-sub">összesen</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">✅</div>
+          <div class="kpi-label">Megfelelési arány</div>
+          <div class="kpi-value" id="kpi-pass-rate">–</div>
+          <div class="kpi-sub">átlag</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">❌</div>
+          <div class="kpi-label">Hibás termékek</div>
+          <div class="kpi-value" id="kpi-failed">–</div>
+          <div class="kpi-sub">NCR összesen</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">📅</div>
+          <div class="kpi-label">Mai ellenőrzések</div>
+          <div class="kpi-value" id="kpi-today">–</div>
+          <div class="kpi-sub">ma</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">⏱</div>
+          <div class="kpi-label">Átlagos időtartam</div>
+          <div class="kpi-value" id="kpi-avg-duration">–</div>
+          <div class="kpi-sub">per ellenőrzés</div>
+        </div>
+      </div>
+
+      <!-- Grafikonok -->
+      <div class="chart-card">
+        <div class="chart-card-title">Hibaarány terméktípusonként</div>
+        <div class="chart-wrap">
+          <canvas id="chart-defect-rate"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-title">Heti ellenőrzési trend</div>
+        <div class="chart-wrap">
+          <canvas id="chart-trend"></canvas>
+        </div>
+      </div>
+
+      <!-- Legutóbbi ellenőrzések -->
+      <div class="recent-table-wrap">
+        <div class="recent-table-title">Legutóbbi ellenőrzések</div>
+        <table class="recent-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Termék</th>
+              <th>Ellenőr</th>
+              <th>Dátum</th>
+              <th>Idő</th>
+              <th>Eredmény</th>
+            </tr>
+          </thead>
+          <tbody id="recent-table-body"></tbody>
+        </table>
+      </div>
+
+      <!-- Leggyakoribb hibák -->
+      <div class="defect-stats-card">
+        <div class="defect-stats-title">⚠️ Leggyakoribb hibák</div>
+        <div id="top-defects-list"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       BOTTOM NAVIGÁCIÓ
+  ════════════════════════════════════════════════════════ -->
+  <nav class="bottom-nav" id="bottom-nav" style="display:none">
+    <button class="nav-item" data-nav="home">
+      <span class="nav-icon">🏠</span>
+      <span>Főmenü</span>
+    </button>
+    <button class="nav-item" data-nav="scanner">
+      <span class="nav-icon">📷</span>
+      <span>Beolvasás</span>
+    </button>
+    <button class="nav-item" id="nav-dashboard-btn">
+      <span class="nav-icon">📊</span>
+      <span>Dashboard</span>
+    </button>
+  </nav>
+
+</div><!-- /#app -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     MODÁLOK
+════════════════════════════════════════════════════════ -->
+
+<!-- Info Modal -->
+<div class="modal-overlay" id="info-modal">
+  <div class="modal-card">
+    <button class="modal-close" id="info-modal-close">✕</button>
+    <h3 class="modal-title" id="info-modal-title">Segédlet</h3>
+    <p class="modal-text" id="info-modal-text"></p>
+    <div class="modal-example good" id="info-good"></div>
+    <div class="modal-example bad" id="info-bad"></div>
+  </div>
+</div>
+
+<!-- Fotó Modal -->
+<div class="modal-overlay" id="photo-modal">
+  <div class="modal-card">
+    <button class="modal-close" id="photo-modal-close">✕</button>
+    <h3 class="modal-title">📷 Hiba fotózása</h3>
+    <div class="photo-video-wrap">
+      <video id="photo-video" playsinline muted autoplay></video>
+      <canvas id="photo-canvas"></canvas>
+    </div>
+    <button class="capture-btn" id="capture-photo-btn">
+      📸 Fotó elkészítése
+    </button>
+  </div>
+</div>
+
+
+<!-- Toast értesítő -->
+<div class="toast" id="toast"></div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     SZKRIPTEK
+════════════════════════════════════════════════════════ -->
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/scanner.js"></script>
+<script src="js/checklist.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/dashboard.js"></script>
+
+<script>
+// ── Topbar és Nav megjelenítés login után ──
+const origNavigate = navigate;
+window.navigate = function(screen, data = {}) {
+  const topbar = document.getElementById('main-topbar');
+  const nav = document.getElementById('bottom-nav');
+  const loginScreen = screen === 'login';
+
+  topbar.style.display = loginScreen ? 'none' : 'flex';
+  nav.style.display = loginScreen ? 'none' : 'flex';
+
+  // Dashboard nav láthatóság (csak menedzsernek és ellenőröknek is)
+  const navDashBtn = document.getElementById('nav-dashboard-btn');
+  if (navDashBtn) {
+    navDashBtn.onclick = () => {
+      navigate('dashboard');
+    };
+  }
+
+  origNavigate(screen, data);
+
+  // Aktív nav elem jelölése
+  document.querySelectorAll('.nav-item[data-nav]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.nav === screen);
+  });
+
+  // Dashboard dátum
+  if (screen === 'dashboard') {
+    const el = document.getElementById('dashboard-date');
+    if (el) el.textContent = new Date().toLocaleDateString('hu-HU', {
+      year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+    });
+  }
+};
+
+// Service Worker regisztráció
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>

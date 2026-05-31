@@ -1,0 +1,29 @@
+{
+  "name": "MEOSEGÉD – Minőségügyi Segéd",
+  "short_name": "MEOSEGÉD",
+  "description": "Dinamikus minőségügyi ellenőrző rendszer vasúti alkatrészgyártáshoz",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0a12",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "lang": "hu",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%236366f1'/><text y='130' x='30' font-size='120' font-family='sans-serif'>🔍</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Új ellenőrzés",
+      "short_name": "Ellenőrzés",
+      "description": "Indíts új minőségügyi ellenőrzést",
+      "url": "./index.html#scanner",
+      "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text y='80' font-size='80'>📷</text></svg>", "sizes": "96x96"}]
+    }
+  ]
+}
