@@ -286,9 +286,16 @@ function generatePDF(ins, product, action = 'download') {
 // ── Mentés / Megtekintés ──
   const filename = `${ins.id}_${product.id}_tanusitvany.pdf`;
   if (action === 'view') {
-    const blob = doc.output('blob');
-    const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
+    const dataUri = doc.output('datauristring');
+    const iframe = document.getElementById('pdf-view-iframe');
+    const modal = document.getElementById('pdf-view-modal');
+    if (iframe && modal) {
+      iframe.src = dataUri;
+      modal.classList.add('open');
+    } else {
+      // Fallback
+      window.open(URL.createObjectURL(doc.output('blob')), '_blank');
+    }
   } else {
     doc.save(filename);
     showToast('✅ PDF tanúsítvány letöltve!', 'info');

@@ -356,6 +356,17 @@
   </div>
 </div>
 
+<!-- PDF Megtekintő Modal -->
+<div class="modal-overlay" id="pdf-view-modal">
+  <div class="modal-card" style="width: 95vw; height: 90vh; max-width: 800px; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+    <div style="background: var(--bg-1, #ffffff); border-bottom: 1px solid var(--border, #e2e8f0); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="color: var(--text-primary, #0f172a); margin: 0; font-size: 16px; font-weight: 600;">📄 Tanúsítvány megtekintése</h3>
+      <button id="pdf-view-close" style="background: var(--fail, #ef4444); color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Bezárás</button>
+    </div>
+    <iframe id="pdf-view-iframe" style="flex: 1; width: 100%; border: none; background: #525659;"></iframe>
+  </div>
+</div>
+
 
 <!-- Toast értesítő -->
 <div class="toast" id="toast"></div>
@@ -412,6 +423,14 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   });
 }
+
+// PDF Megtekintő bezárás
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pdf-view-close')?.addEventListener('click', () => {
+    document.getElementById('pdf-view-modal').classList.remove('open');
+    document.getElementById('pdf-view-iframe').src = '';
+  });
+});
 </script>
 
 </body>
