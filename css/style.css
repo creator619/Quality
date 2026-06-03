@@ -6,36 +6,36 @@
 
 /* ── CSS Variables ───────────────────────────────────────── */
 :root {
-  --bg-0:    #0d1117;
-  --bg-1:    #161b22;
-  --bg-2:    #1c2128;
-  --bg-3:    #22272e;
-  --bg-card: #1c2128;
+  --bg-0:    #f8fafc;
+  --bg-1:    #ffffff;
+  --bg-2:    #f1f5f9;
+  --bg-3:    #e2e8f0;
+  --bg-card: #ffffff;
 
-  --border:        #30363d;
-  --border-subtle: #21262d;
-  --border-strong: #484f58;
+  --border:        #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --border-strong: #cbd5e1;
 
-  --text-primary:   #e6edf3;
-  --text-secondary: #7d8590;
-  --text-muted:     #484f58;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
 
-  --accent:       #2f81f7;
-  --accent-dim:   rgba(47,129,247,0.12);
+  --accent:       #3b82f6;
+  --accent-dim:   rgba(59,130,246,0.15);
 
-  --pass:     #3fb950;
-  --pass-dim: rgba(63,185,80,0.1);
-  --fail:     #f85149;
-  --fail-dim: rgba(248,81,73,0.1);
-  --warn:     #d29922;
-  --warn-dim: rgba(210,153,34,0.1);
+  --pass:     #10b981;
+  --pass-dim: rgba(16,185,129,0.15);
+  --fail:     #ef4444;
+  --fail-dim: rgba(239,68,68,0.15);
+  --warn:     #f59e0b;
+  --warn-dim: rgba(245,158,11,0.15);
 
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
 
-  --shadow: 0 1px 3px rgba(0,0,0,0.4);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
 
   --transition: all 0.15s ease;
 }
