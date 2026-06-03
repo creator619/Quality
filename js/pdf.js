@@ -97,7 +97,7 @@ function renderSummary({ inspection: ins, product }) {
 }
 
 // ─── PDF Generálás ───────────────────────────────────────────
-function generatePDF(ins, product) {
+function generatePDF(ins, product, action = 'download') {
   if (typeof jsPDF === 'undefined') {
     showToast('PDF könyvtár betöltése folyamatban...', 'info');
     return;
@@ -283,8 +283,14 @@ function generatePDF(ins, product) {
   doc.text(`Generálva: ${new Date().toLocaleString('hu-HU')} · MEOSEGÉD v1.0`, margin, 293);
   doc.text(`${ins.id}`, pageW - margin, 293, { align: 'right' });
 
-  // ── Mentés ──
+// ── Mentés / Megtekintés ──
   const filename = `${ins.id}_${product.id}_tanusitvany.pdf`;
-  doc.save(filename);
-  showToast('✅ PDF tanúsítvány letöltve!', 'info');
+  if (action === 'view') {
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  } else {
+    doc.save(filename);
+    showToast('✅ PDF tanúsítvány letöltve!', 'info');
+  }
 }

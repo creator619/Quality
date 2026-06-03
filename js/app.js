@@ -177,6 +177,9 @@ function renderPdfLibrary() {
             <div class="result-badge ${ins.result === 'HIBÁS' ? 'badge-fail' : 'badge-pass'}">
               ${ins.result === 'HIBÁS' ? '✗ HIBÁS' : '✓ OK'}
             </div>
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px;" onclick="viewPdfFromLibrary('${ins.id}')">
+              👁️ Megtekintés
+            </button>
             <button class="btn-primary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px;" onclick="downloadPdfFromLibrary('${ins.id}')">
               📄 Letöltés
             </button>
@@ -187,6 +190,19 @@ function renderPdfLibrary() {
   }).join('');
 }
 
+window.viewPdfFromLibrary = function(insId) {
+  const ins = AppState.inspections.find(i => i.id === insId);
+  if (!ins) return;
+  const product = PRODUCTS[ins.product];
+  if (!product) return;
+  
+  if (typeof generatePDF === 'function') {
+    generatePDF(ins, product, 'view');
+  } else {
+    showToast('Hiba: a PDF generáló nem található.', 'error');
+  }
+};
+
 window.downloadPdfFromLibrary = function(insId) {
   const ins = AppState.inspections.find(i => i.id === insId);
   if (!ins) return;
@@ -194,7 +210,7 @@ window.downloadPdfFromLibrary = function(insId) {
   if (!product) return;
   
   if (typeof generatePDF === 'function') {
-    generatePDF(ins, product);
+    generatePDF(ins, product, 'download');
   } else {
     showToast('Hiba: a PDF generáló nem található.', 'error');
   }
