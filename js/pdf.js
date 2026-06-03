@@ -98,12 +98,12 @@ function renderSummary({ inspection: ins, product }) {
 
 // ─── PDF Generálás ───────────────────────────────────────────
 function generatePDF(ins, product, action = 'download') {
-  if (typeof jsPDF === 'undefined') {
+  if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {
     showToast('PDF könyvtár betöltése folyamatban...', 'info');
     return;
   }
 
-  const { jsPDF: JSPDF } = window.jspdf || { jsPDF: window.jsPDF };
+  const { jsPDF: JSPDF } = window.jspdf || window;
   const doc = new JSPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
   const pageW = 210;
