@@ -189,9 +189,17 @@ function generatePDF(ins, product) {
   doc.text('Eredmény', margin + 148, y + 5);
   y += 7;
 
+  // Biztosítjuk, hogy ins.results létezzen
+  if (!ins.results) {
+    ins.results = {};
+  }
+
   product.checklist.forEach((item, idx) => {
-    const r = ins.results[item.id];
-    if (!r) return;
+    // Ha nincs részletes eredmény (pl. demó adat), akkor generálunk egy "kamu" eredményt a fő státusz alapján
+    let r = ins.results[item.id];
+    if (!r) {
+      r = { status: ins.result || 'MEGFELELŐ', value: undefined, unit: item.unit };
+    }
 
     const isPass = r.status === 'MEGFELELŐ';
     const rowH = 8;

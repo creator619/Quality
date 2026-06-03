@@ -35,6 +35,7 @@ function navigate(screen, data = {}) {
     case 'checklist': renderChecklist(data.product); break;
     case 'dashboard': renderDashboard(); break;
     case 'summary': renderSummary(data); break;
+    case 'pdf-library': renderPdfLibrary(); break;
   }
 }
 
@@ -147,3 +148,55 @@ function generateId() {
   const num = String(AppState.inspections.length + 1).padStart(3, '0');
   return `INS-${year}-${num}`;
 }
+
+// ─── PDF Könyvtár ────────────────────────────────────────────
+function renderPdfLibrary() {
+  const container = document.getElementById('pdf-list-container');
+  if (!container) return;
+
+  const allInspections = [...AppState.inspections].reverse();
+
+  if (allInspections.length === 0) {
+    container.innerHTML = '<p class="empty-state">Még nincsenek generálható tanúsítványok.</p>';
+    return;
+  }
+
+  container.innerHTML = allInspections.map(ins => {
+    const product = PRODUCTS[ins.product];
+    return `
+      <div class="inspection-item ${ins.result === 'HIBÁS' ? 'faulty' : ''}" style="margin-bottom: 12px; padding: 16px;">
+        <div class="inspection-item-left" style="width: 100%; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <span class="product-badge" style="background:${product?.color || '#666'}">${ins.product}</span>
+            <div>
+              <div class="ins-id">${ins.id}</div>
+              <div class="ins-date">${ins.date} · Ellenőr: ${ins.inspector}</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <div class="result-badge ${ins.result === 'HIBÁS' ? 'badge-fail' : 'badge-pass'}">
+              ${ins.result === 'HIBÁS' ? '✗ HIBÁS' : '✓ OK'}
+            </div>
+            <button class="btn-primary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px;" onclick="downloadPdfFromLibrary('${ins.id}')">
+              📄 Letöltés
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.downloadPdfFromLibrary = function(insId) {
+  const ins = AppState.inspections.find(i => i.id === insId);
+  if (!ins) return;
+  const product = PRODUCTS[ins.product];
+  if (!product) return;
+  
+  if (typeof generatePDF === 'function') {
+    generatePDF(ins, product);
+  } else {
+    showToast('Hiba: a PDF generáló nem található.', 'error');
+  }
+};
+

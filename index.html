@@ -279,6 +279,21 @@
 
 
   <!-- ════════════════════════════════════════════════════════
+       PDF KÖNYVTÁR
+  ════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-pdf-library">
+    <div class="content-wrap">
+      <div class="dashboard-title">📄 PDF Könyvtár</div>
+      <div class="dashboard-subtitle">Itt találod az összes befejezett ellenőrzést, amelyekhez tanúsítvány generálható.</div>
+      
+      <div id="pdf-list-container" style="margin-top: 20px;">
+        <p class="empty-state">Betöltés...</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════
        BOTTOM NAVIGÁCIÓ
   ════════════════════════════════════════════════════════ -->
   <nav class="bottom-nav" id="bottom-nav" style="display:none">
@@ -293,6 +308,10 @@
     <button class="nav-item" id="nav-dashboard-btn">
       <span class="nav-icon">📊</span>
       <span>Dashboard</span>
+    </button>
+    <button class="nav-item" data-nav="pdf-library">
+      <span class="nav-icon">📄</span>
+      <span>Könyvtár</span>
     </button>
   </nav>
 
