@@ -354,6 +354,23 @@ function openInfoModal(item) {
   document.getElementById('info-modal-text').textContent = item.info.text;
   document.getElementById('info-good').textContent = '✅ ' + item.info.goodExample;
   document.getElementById('info-bad').textContent = '❌ ' + item.info.badExample;
+
+  const goodImg = document.getElementById('info-good-img');
+  if (item.info.goodImg) {
+    goodImg.src = item.info.goodImg;
+    goodImg.style.display = 'block';
+  } else {
+    goodImg.style.display = 'none';
+  }
+
+  const badImg = document.getElementById('info-bad-img');
+  if (item.info.badImg) {
+    badImg.src = item.info.badImg;
+    badImg.style.display = 'block';
+  } else {
+    badImg.style.display = 'none';
+  }
+
   modal?.classList.add('open');
 }
 

@@ -23,7 +23,9 @@ const PRODUCTS = {
         info: {
           text: "A festékfelületnek egyenletesnek kell lennie. Elfogadható: kisebb karcolás (max 2mm). Nem elfogadható: rozsdafolt, buborékos festék.",
           goodExample: "Egyenletes, sötétszürke felszín, maximum 1-2 kis karcolással.",
-          badExample: "Rozsdafolt a saroknál, vagy leváló festék."
+          goodImg: "https://dummyimage.com/400x250/10b981/ffffff&text=OK+-+Tiszta+fel%C3%BClet",
+          badExample: "Rozsdafolt a saroknál, vagy leváló festék.",
+          badImg: "https://dummyimage.com/400x250/ef4444/ffffff&text=NOK+-+Rozsdafoltos"
         }
       },
       {

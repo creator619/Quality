@@ -305,12 +305,20 @@
 
 <!-- Info Modal -->
 <div class="modal-overlay" id="info-modal">
-  <div class="modal-card">
+  <div class="modal-card" style="max-height: 90vh; overflow-y: auto;">
     <button class="modal-close" id="info-modal-close">✕</button>
     <h3 class="modal-title" id="info-modal-title">Segédlet</h3>
     <p class="modal-text" id="info-modal-text"></p>
-    <div class="modal-example good" id="info-good"></div>
-    <div class="modal-example bad" id="info-bad"></div>
+    
+    <div class="modal-example good">
+      <div id="info-good"></div>
+      <img id="info-good-img" src="" alt="Megfelelő példa" style="display:none; width: 100%; margin-top: 10px; border-radius: 8px; border: 2px solid var(--pass);">
+    </div>
+    
+    <div class="modal-example bad">
+      <div id="info-bad"></div>
+      <img id="info-bad-img" src="" alt="Hibás példa" style="display:none; width: 100%; margin-top: 10px; border-radius: 8px; border: 2px solid var(--fail);">
+    </div>
   </div>
 </div>
 
