@@ -394,6 +394,135 @@ const PRODUCTS = {
         }
       }
     ]
+  },
+
+  "VELARO-MS-BT": {
+    id: "VELARO-MS-BT",
+    name: "Velaro MS bőröndtartó",
+    type: "Gepäckregale",
+    client: "Siemens Mobility GmbH",
+    clientLogo: "🚄",
+    drawing: "496-8549-0000",
+    revision: "rev02 (2022.05.30.)",
+    color: "#6366f1",
+    checklist: [
+      {
+        id: "vmsbt_01",
+        order: 1,
+        title: "Breite – Szélesség mérése",
+        description: "Mérd meg a bőröndtartó szélességét (Breite) tolómérővel. Névleges érték: 633 mm, tűrés: ±1 mm. (Rajz: 496-8549-0000, Prüfplan: 496-7725-0000)",
+        type: "measurement",
+        unit: "mm",
+        min: 632,
+        max: 634,
+        target: 633,
+        requires: [],
+        info: {
+          text: "Rajzszám: 496-8549-0000, rev02. A szélesség mérése tolómérővel történik. Névleges méret: 633 mm, tűrés: ±1 mm. Mérj legalább 2 ponton (bal és jobb oldal).",
+          goodExample: "632–634 mm mindkét mérési ponton.",
+          badExample: "631 mm alatt vagy 635 mm felett – méreteltérés, nem megfelelő."
+        }
+      },
+      {
+        id: "vmsbt_02",
+        order: 2,
+        title: "Fixing pozíció mérése (2x)",
+        description: "Mérd meg a két rögzítési pont (Fixing 2x) helyzetét. Névleges érték: 91,5 mm, tűrés: ±0,5 mm. (Prüfplan: 496-7725-0000)",
+        type: "measurement",
+        unit: "mm",
+        min: 91.0,
+        max: 92.0,
+        target: 91.5,
+        requires: ["vmsbt_01"],
+        info: {
+          text: "A két rögzítési pontot (Fixing 2x) szimmetrikusan kell mérni. Névleges: 91,5 mm ±0,5 mm. Mindkét oldalon mérni kell és mindkettőnek a tűrésen belül kell lennie.",
+          goodExample: "91,2–91,8 mm mindkét rögzítési ponton.",
+          badExample: "90,9 mm alatt vagy 92,1 mm felett – nem megfelelő pozíció."
+        }
+      },
+      {
+        id: "vmsbt_03",
+        order: 3,
+        title: "Pulverlack – Porfestett felület ellenőrzése (MU 8.5.1.2-21)",
+        description: "Ellenőrizd a porfestett (Pulverlack) felület minőségét: nincs-e karc, buborék, leválás, foltos lefedés. (MU 8.5.1.2-21 szerint)",
+        type: "boolean",
+        requires: ["vmsbt_01"],
+        info: {
+          text: "MU 8.5.1.2-21 szabvány alapján: a porfestett felületnek egyenletesnek, hibamentesnek kell lennie. Nem megengedett: karc, buborék, festékleválás, fedetlen folt, szemcsés vagy érdes felület.",
+          goodExample: "Egyenletes, sima porfestett felület, látható hiba nélkül.",
+          badExample: "Karc, buborék, fedetlen folt vagy leváló festék a felületen."
+        }
+      },
+      {
+        id: "vmsbt_04",
+        order: 4,
+        title: "Glass Prüfung – Üvegfelület ellenőrzése (MU 8.5.1-6)",
+        description: "Ellenőrizd az üvegfelületek (Glass Prüfung) állapotát: nincs-e repedés, törés, karcolt felület. (MU 8.5.1-6 szerint)",
+        type: "boolean",
+        requires: ["vmsbt_01"],
+        info: {
+          text: "MU 8.5.1-6 szabvány alapján: az üvegfelületeknek épnek, sérülésmentesnek kell lenniük. Ellenőrizd a széleit és a teljes felületet erős megvilágítás mellett.",
+          goodExample: "Tiszta, sértetlen üvegfelület, repedés és karc nélkül.",
+          badExample: "Repedés, törés, karcolt felület – azonnali selejtezés."
+        }
+      },
+      {
+        id: "vmsbt_05",
+        order: 5,
+        title: "Stahl Oberflächen – Acélfelület csiszolás ellenőrzése",
+        description: "Ellenőrizd az acélfelületek csiszolási minőségét (Stahl Oberflächen Schleifen): egyenletes csiszolás, sorja nélküli élek, nincs korróziós folt.",
+        type: "boolean",
+        requires: ["vmsbt_03"],
+        info: {
+          text: "A csiszolt acélfelületeknek egyenletesnek kell lenniük. Nem megengedett: sorja, éles perem, rozsdafolt, oxidáció vagy egyenetlen csiszolás. Ellenőrizd az összes varratnál is.",
+          goodExample: "Egyenletes, sima csiszolt acélfelület, sorja és korrózió nélkül.",
+          badExample: "Sorja, éles perem, rozsdafolt vagy egyenetlen csiszolás."
+        }
+      },
+      {
+        id: "vmsbt_06",
+        order: 6,
+        title: "HPL Oberflächen – HPL felület ellenőrzése",
+        description: "Ellenőrizd a HPL (High Pressure Laminate) burkolólapok felületét: nincs-e sérülés, leválás, buborék, karc vagy szélrepedés.",
+        type: "boolean",
+        requires: ["vmsbt_04"],
+        info: {
+          text: "A HPL lapoknak tökéletesen kell illeszkedniük és sérülésmentesnek kell lenniük. Ellenőrizd a sarkokat és éleket: nem lehet felváló réteg vagy repedés.",
+          goodExample: "Sima, sértetlen HPL felület, élek szilárdan rögzítve.",
+          badExample: "Leváló él, buborék, karc vagy szélrepedés a HPL lapon."
+        }
+      },
+      {
+        id: "vmsbt_07",
+        order: 7,
+        title: "Montage – Összeszerelés ellenőrzése (Spalt, Position, Kappe)",
+        description: "Ellenőrizd az összeszerelést: hézagok (Spalt) egyenletessége, alkatrészek pozíciója (Position), és a végzáró kupakok (Kappe verpackt) mellékletének megléte.",
+        type: "boolean",
+        requires: ["vmsbt_05", "vmsbt_06"],
+        info: {
+          text: "Az összszerelési ellenőrzés 3 részből áll: (1) Spalt – hézagok egyenletesek-e, (2) Position – alkatrészek a rajz szerinti pozícióban vannak-e, (3) Kappe verpackt – a végzáró kupakokat külön csomagolva kell mellékelni.",
+          goodExample: "Egyenletes hézagok, helyes pozíciók, kupak mellékelt és csomagolt.",
+          badExample: "Egyenetlen hézag, helytelen pozíció, vagy hiányzó/csomagolatlan kupak."
+        }
+      },
+      {
+        id: "vmsbt_08",
+        order: 8,
+        title: "Schichtdicke – Rétegvastagság mérése (70–120 µm)",
+        description: "Mérd meg a felületi bevonat rétegvastagságát (Schichtdicke) rétegvastagság-mérővel legalább 5 ponton. Megengedett tartomány: 70–120 µm.",
+        type: "measurement",
+        unit: "µm",
+        min: 70,
+        max: 120,
+        target: 95,
+        requires: ["vmsbt_03"],
+        info: {
+          text: "Prüfplan 496-7725-0000 alapján: megengedett rétegvastagság 70–120 µm. Mérj legalább 5 különböző ponton. Ha bármelyik pont a tartományon kívül esik, az egység nem megfelelő.",
+          goodExample: "80–110 µm minden mérési ponton – megfelelő bevonatvédelem.",
+          badExample: "70 µm alatti (túl vékony) vagy 120 µm feletti (túl vastag) érték bármely ponton."
+        }
+      }
+    ]
   }
 };
 
@@ -427,5 +556,7 @@ const QR_CODES = {
   // Rövid kódok a gyors demo teszteléshez:
   "V04X": "VALTO-04X",
   "RBB2": "RELAY-BB2",
-  "V07D": "VALTO-07D"
+  "V07D": "VALTO-07D",
+  "QR-VELARO-MS-BT-2026-001": "VELARO-MS-BT",
+  "VMSBT": "VELARO-MS-BT"
 };
